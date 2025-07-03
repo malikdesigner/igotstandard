@@ -1,0 +1,36 @@
+
+version: '3.8'
+
+services:
+  female-delusion-calculator:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NODE_OPTIONS=--max-old-space-size=4096
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "healthcheck.js"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    volumes:
+      # Optional: Mount logs directory
+      - ./logs:/usr/src/app/logs
+    # Security options
+    security_opt:
+      - no-new-privileges:true
+    # Resource limits - INCREASED MEMORY
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    # Add shared memory for Chrome
+    shm_size: 1gb
+

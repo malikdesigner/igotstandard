@@ -1,0 +1,722 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I Got Standards Bro - Female Delusion Calculator</title>
+    <meta name="description" content="What are the chances to find the man of your dreams? - Live search on US survey data.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-weight: 700;
+        }
+
+        .header h2 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+
+        .calculator-card {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            backdrop-filter: blur(10px);
+        }
+
+        .form-section {
+            margin-bottom: 35px;
+        }
+
+        .form-section h3 {
+            color: #444;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .form-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-row label {
+            min-width: 120px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        select {
+            flex: 1;
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            background: white;
+            transition: border-color 0.3s ease;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        /* Slider Styles */
+        .slider-container {
+            margin: 20px 0;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .slider-value {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .range-slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: #e0e0e0;
+            outline: none;
+            -webkit-appearance: none;
+            transition: all 0.3s ease;
+        }
+
+        .range-slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .range-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .range-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+
+        /* Fixed Dual Range Slider for Age */
+        .age-slider-container {
+            position: relative;
+            margin: 20px 0;
+            padding: 15px 0;
+        }
+
+        .age-slider-track {
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            position: absolute;
+            top: 26px;
+            left: 0;
+            right: 0;
+        }
+
+        .age-slider-range {
+            height: 8px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 4px;
+            position: absolute;
+            top: 0;
+        }
+
+        .age-slider {
+            position: absolute;
+            width: 100%;
+            height: 8px;
+            background: transparent;
+            outline: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            margin: 0;
+            padding: 0;
+            cursor: pointer;
+            top: 26px;
+            pointer-events: none;
+        }
+
+        .age-slider::-webkit-slider-track {
+            width: 100%;
+            height: 8px;
+            background: transparent;
+            border: none;
+        }
+
+        .age-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            position: relative;
+            pointer-events: auto;
+            z-index: 2;
+        }
+
+        .age-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .age-slider::-moz-range-track {
+            width: 100%;
+            height: 8px;
+            background: transparent;
+            border: none;
+        }
+
+        .age-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            pointer-events: auto;
+            z-index: 2;
+        }
+
+        /* Ensure the min slider is always accessible */
+        #minAge {
+            z-index: 3;
+        }
+
+        #maxAge {
+            z-index: 2;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        .checkbox-item:hover {
+            background-color: #f8f9ff;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #667eea;
+            cursor: pointer;
+        }
+
+        .checkbox-item label {
+            min-width: auto !important;
+            color: #555;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .calculate-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 25px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .calculate-btn:active {
+            transform: translateY(0);
+        }
+
+        .calculate-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #c62828;
+            margin: 20px 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .footer {
+            text-align: center;
+            color: rgba(255,255,255,0.8);
+            font-size: 0.9rem;
+            margin-top: 40px;
+            padding: 20px;
+        }
+
+        .footer a {
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .header h2 {
+                font-size: 1.4rem;
+            }
+            
+            .calculator-card {
+                padding: 25px;
+            }
+
+            .form-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .form-row label {
+                min-width: auto;
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>I Got Standards Bro</h1>
+            <h2>Female Delusion Calculator</h2>
+            <p>What are the chances to find the man of your dreams?</p>
+            <p><small>Live search on US survey data</small></p>
+        </div>
+
+        <div class="calculator-card">
+            <form id="calculatorForm">
+                <div class="form-section">
+                    <h3>Age Range</h3>
+                    <div class="age-slider-container">
+                        <div class="slider-label">
+                            <span>Age Range:</span>
+                            <span class="slider-value"><span id="minAgeValue">25</span> - <span id="maxAgeValue">35</span> years</span>
+                        </div>
+                        <div style="position: relative; height: 50px; margin: 20px 0;">
+                            <div class="age-slider-track">
+                                <div class="age-slider-range" id="ageSliderRange"></div>
+                            </div>
+                            <input type="range" id="minAge" name="minAge" min="18" max="85" value="25" class="age-slider">
+                            <input type="range" id="maxAge" name="maxAge" min="18" max="85" value="35" class="age-slider">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Race</h3>
+                    <div class="form-row">
+                        <label for="race">Preference:</label>
+                        <select id="race" name="race">
+                            <option value="0">Any color or shade</option>
+                            <option value="1">White</option>
+                            <option value="2">Black</option>
+                            <option value="3">Asian</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Height</h3>
+                    <div class="slider-container">
+                        <div class="slider-label">
+                            <span>Minimum Height:</span>
+                            <span class="slider-value" id="heightValue">6'0"</span>
+                        </div>
+                        <input type="range" id="height" name="height" min="0" max="20" value="12" class="range-slider">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Income</h3>
+                    <div class="slider-container">
+                        <div class="slider-label">
+                            <span>Minimum Income:</span>
+                            <span class="slider-value" id="incomeValue">$100,000</span>
+                        </div>
+                        <input type="range" id="income" name="income" min="0" max="17" value="9" class="range-slider">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Exclusions</h3>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="excludeMarried" name="excludeMarried" checked>
+                            <label for="excludeMarried">Must be single (not married)</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="excludeObese" name="excludeObese" checked>
+                            <label for="excludeObese">Must not be obese</label>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="calculate-btn">Calculate</button>
+            </form>
+        </div>
+
+        <div id="loadingSection" class="loading hidden">
+            <div class="spinner"></div>
+            <span>Processing your request...</span>
+        </div>
+
+        <div id="errorSection" class="error-message hidden">
+            <strong>Error:</strong> <span id="errorText"></span>
+        </div>
+
+        <div class="footer">
+            <p>Data sources: U.S. Census Bureau, National Center for Health Statistics</p>
+            <p><a href="#about">About</a> | <a href="https://realitycalc.com">Male Reality Calculator</a></p>
+        </div>
+    </div>
+
+    <script>
+        // Configuration for the backend API
+        const API_BASE_URL = 'http://localhost:3000';
+
+        // Height options mapping - Values in CM for backend, labels in feet/inches only for display
+        const heightOptions = [
+            { value: 'any', label: 'Any height', cm: 0 },
+            { value: "5'0", label: "5'0\"", cm: 152.4 },
+            { value: "5'1", label: "5'1\"", cm: 154.94 },
+            { value: "5'2", label: "5'2\"", cm: 157.48 },
+            { value: "5'3", label: "5'3\"", cm: 160.02 },
+            { value: "5'4", label: "5'4\"", cm: 162.56 },
+            { value: "5'5", label: "5'5\"", cm: 165.1 },
+            { value: "5'6", label: "5'6\"", cm: 167.64 },
+            { value: "5'7", label: "5'7\"", cm: 170.18 },
+            { value: "5'8", label: "5'8\"", cm: 172.72 },
+            { value: "5'9", label: "5'9\"", cm: 175.26 },
+            { value: "5'10", label: "5'10\"", cm: 177.8 },
+            { value: "5'11", label: "5'11\"", cm: 180.34 },
+            { value: "6'0", label: "6'0\"", cm: 182.88 },
+            { value: "6'1", label: "6'1\"", cm: 185.42 },
+            { value: "6'2", label: "6'2\"", cm: 187.96 },
+            { value: "6'3", label: "6'3\"", cm: 190.5 },
+            { value: "6'4", label: "6'4\"", cm: 193.04 },
+            { value: "6'5", label: "6'5\"", cm: 195.58 },
+            { value: "6'6", label: "6'6\"", cm: 198.12 },
+            { value: "6'7", label: "6'7\"", cm: 200.66 },
+            { value: "7'0", label: "7'0\"", cm: 213.36 }
+        ];
+
+        // Income options mapping
+        const incomeOptions = [
+            { value: 'any', label: 'Any income', amount: 0 },
+            { value: '25000', label: '$25,000', amount: 25000 },
+            { value: '30000', label: '$30,000', amount: 30000 },
+            { value: '40000', label: '$40,000', amount: 40000 },
+            { value: '50000', label: '$50,000', amount: 50000 },
+            { value: '60000', label: '$60,000', amount: 60000 },
+            { value: '70000', label: '$70,000', amount: 70000 },
+            { value: '80000', label: '$80,000', amount: 80000 },
+            { value: '90000', label: '$90,000', amount: 90000 },
+            { value: '100000', label: '$100,000', amount: 100000 },
+            { value: '125000', label: '$125,000', amount: 125000 },
+            { value: '150000', label: '$150,000', amount: 150000 },
+            { value: '175000', label: '$175,000', amount: 175000 },
+            { value: '200000', label: '$200,000', amount: 200000 },
+            { value: '250000', label: '$250,000', amount: 250000 },
+            { value: '300000', label: '$300,000', amount: 300000 },
+            { value: '400000', label: '$400,000', amount: 400000 },
+            { value: '500000', label: '$500,000', amount: 500000 }
+        ];
+
+        // Initialize sliders
+        function initializeSliders() {
+            // Age sliders
+            const minAgeSlider = document.getElementById('minAge');
+            const maxAgeSlider = document.getElementById('maxAge');
+            const minAgeValue = document.getElementById('minAgeValue');
+            const maxAgeValue = document.getElementById('maxAgeValue');
+            const ageSliderRange = document.getElementById('ageSliderRange');
+
+            function updateAgeRange() {
+                let min = parseInt(minAgeSlider.value);
+                let max = parseInt(maxAgeSlider.value);
+                
+                // Ensure min doesn't exceed max
+                if (min > max) {
+                    min = max;
+                    minAgeSlider.value = min;
+                }
+                
+                // Ensure max doesn't go below min
+                if (max < min) {
+                    max = min;
+                    maxAgeSlider.value = max;
+                }
+                
+                minAgeValue.textContent = min;
+                maxAgeValue.textContent = max;
+
+                // Calculate percentages for the visual range
+                const minRange = 18;
+                const maxRange = 85;
+                const percent1 = ((min - minRange) / (maxRange - minRange)) * 100;
+                const percent2 = ((max - minRange) / (maxRange - minRange)) * 100;
+                
+                // Update visual range
+                ageSliderRange.style.left = percent1 + '%';
+                ageSliderRange.style.width = (percent2 - percent1) + '%';
+            }
+
+            // Enhanced event handling for better dual-range behavior
+            minAgeSlider.addEventListener('input', function() {
+                updateAgeRange();
+                // When dragging min slider, bring it to front
+                this.style.zIndex = '4';
+                maxAgeSlider.style.zIndex = '2';
+            });
+            
+            maxAgeSlider.addEventListener('input', function() {
+                updateAgeRange();
+                // When dragging max slider, bring it to front
+                this.style.zIndex = '4';
+                minAgeSlider.style.zIndex = '2';
+            });
+
+            // Reset z-index when not actively dragging
+            minAgeSlider.addEventListener('mouseup', function() {
+                this.style.zIndex = '3';
+            });
+            
+            maxAgeSlider.addEventListener('mouseup', function() {
+                this.style.zIndex = '2';
+            });
+            
+            // Initialize
+            updateAgeRange();
+
+            // Height slider
+            const heightSlider = document.getElementById('height');
+            const heightValue = document.getElementById('heightValue');
+
+            function updateHeight() {
+                const index = parseInt(heightSlider.value);
+                const option = heightOptions[index];
+                heightValue.textContent = option.label;
+            }
+
+            heightSlider.addEventListener('input', updateHeight);
+            updateHeight(); // Initialize
+
+            // Income slider
+            const incomeSlider = document.getElementById('income');
+            const incomeValue = document.getElementById('incomeValue');
+
+            function updateIncome() {
+                const index = parseInt(incomeSlider.value);
+                const option = incomeOptions[index];
+                incomeValue.textContent = option.label;
+            }
+
+            incomeSlider.addEventListener('input', updateIncome);
+            updateIncome(); // Initialize
+        }
+
+        document.getElementById('calculatorForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            calculateResults();
+        });
+
+        async function calculateResults() {
+            console.log('Calculate button clicked');
+            
+            const formData = new FormData(document.getElementById('calculatorForm'));
+            
+            // Get slider values and convert properly
+            const heightIndex = parseInt(document.getElementById('height').value);
+            const incomeIndex = parseInt(document.getElementById('income').value);
+            
+            // FIXED: Send data in the format expected by backend
+            const criteria = {
+                minAge: parseInt(document.getElementById('minAge').value),
+                maxAge: parseInt(document.getElementById('maxAge').value),
+                race: formData.get('race'), // This will be '0', '1', '2', or '3'
+                height: heightOptions[heightIndex].cm, // Send CM value directly
+                income: incomeOptions[incomeIndex].value, // Send string value like "125000" or "any"
+                excludeMarried: document.getElementById('excludeMarried').checked,
+                excludeObese: document.getElementById('excludeObese').checked
+            };
+
+            console.log('Criteria being sent to backend:', criteria);
+
+            // FIXED: Create URL parameters matching backend expectations and target site
+            const params = new URLSearchParams({
+                minAge: criteria.minAge,
+                maxAge: criteria.maxAge,
+                race: criteria.race,
+                height: criteria.height, // Send CM value  
+                minIncome: criteria.income, // FIXED: Use minIncome not income
+                excludeMarried: criteria.excludeMarried,
+                excludeObese: criteria.excludeObese
+            });
+
+            console.log('URL parameters:', params.toString());
+
+            // Navigate to results page
+            window.location.href = `results.html?${params.toString()}`;
+        }
+
+        // Initialize with subtle animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const card = document.querySelector('.calculator-card');
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                card.style.transition = 'all 0.6s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 100);
+
+            // Initialize sliders
+            initializeSliders();
+
+            // Test server connection
+            testServerConnection();
+        });
+
+        async function testServerConnection() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/health`);
+                if (!response.ok) {
+                    throw new Error('Server not responding');
+                }
+                console.log('Server connection OK');
+            } catch (error) {
+                console.warn('Server connection failed:', error.message);
+                showError('Warning: Backend server is not available. Please start the scraper service.');
+            }
+        }
+
+        function showError(message) {
+            document.getElementById('errorText').textContent = message;
+            document.getElementById('errorSection').classList.remove('hidden');
+            document.getElementById('errorSection').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
+

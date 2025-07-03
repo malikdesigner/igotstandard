@@ -1,0 +1,4 @@
+node_modules/
+/public/screenshot_*.png
+cache/ 
+"cache/*.json" 

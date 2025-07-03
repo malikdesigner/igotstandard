@@ -1,0 +1,683 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Results - I Got Standards Bro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            min-height: 100vh;
+            color: white;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .section h2 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: #ecf0f1;
+            font-weight: 300;
+        }
+
+        .ideal-man-list {
+            list-style: none;
+            text-align: left;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .ideal-man-list li {
+            padding: 12px 0;
+            color: #bdc3c7;
+            font-size: 1.1rem;
+            position: relative;
+            padding-left: 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .ideal-man-list li:last-child {
+            border-bottom: none;
+        }
+
+        .ideal-man-list li:before {
+            content: "✓";
+            color: #3498db;
+            font-size: 1.2rem;
+            position: absolute;
+            left: 0;
+            top: 12px;
+            font-weight: bold;
+        }
+
+        .probability-section {
+            text-align: center;
+        }
+
+        .probability-visualization {
+            background: linear-gradient(135deg, #4a6741 0%, #5a7c50 50%, #6a8c60 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            position: relative;
+            overflow: hidden;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .probability-visualization .population-visualizer {
+            background: transparent !important;
+        }
+
+        .probability-text {
+            color: #ecf0f1;
+            font-size: 1.1rem;
+            margin: 20px 0;
+            line-height: 1.6;
+        }
+
+        .probability-text a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        .probability-text a:hover {
+            text-decoration: underline;
+        }
+
+        .percentage {
+            font-size: 4rem;
+            font-weight: 700;
+            color: #3498db;
+            margin: 20px 0;
+            text-shadow: 0 0 20px rgba(52, 152, 219, 0.5);
+        }
+
+        .delusion-section {
+            text-align: center;
+        }
+
+        .cat-food-containers {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .cat-food {
+            width: 80px;
+            height: 100px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            transition: transform 0.3s ease;
+        }
+
+        .cat-food img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .delusion-score {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #3498db;
+            margin: 20px 0;
+        }
+
+        .delusion-label {
+            font-size: 1.5rem;
+            color: #3498db;
+            font-weight: 300;
+            margin-bottom: 20px;
+        }
+
+        .new-search-btn {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 30px;
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.3);
+        }
+
+        .new-search-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(52, 152, 219, 0.4);
+        }
+
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin: 40px 0;
+        }
+
+        .spinner {
+            width: 30px;
+            height: 30px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #e74c3c;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .footer-nav {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-nav a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            margin: 0 20px;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-nav a:hover {
+            color: #3498db;
+        }
+
+        .criteria-tag {
+            display: inline-block;
+            background: rgba(52, 152, 219, 0.2);
+            color: #3498db;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            margin: 3px;
+            border: 1px solid rgba(52, 152, 219, 0.3);
+        }
+
+        .screenshot-link {
+            display: inline-block;
+            background: rgba(52, 152, 219, 0.2);
+            color: #3498db;
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            margin: 20px 0;
+            border: 1px solid rgba(52, 152, 219, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .screenshot-link:hover {
+            background: rgba(52, 152, 219, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+
+        .screenshot-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 15px;
+            }
+
+            .section {
+                padding: 25px;
+            }
+
+            .section h2 {
+                font-size: 1.5rem;
+            }
+
+            .percentage {
+                font-size: 3rem;
+            }
+
+            .delusion-score {
+                font-size: 2rem;
+            }
+
+            .cat-food {
+                width: 60px;
+                height: 80px;
+            }
+
+            .ideal-man-list {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Loading Section -->
+        <div id="loadingSection" class="loading">
+            <div class="spinner"></div>
+            <span style="font-size: 1.2rem;">Fetching your results...</span>
+        </div>
+
+        <!-- Error Section -->
+        <div id="errorSection" class="error-message hidden">
+            <strong>Error:</strong> <span id="errorText"></span>
+            <br><br>
+            <a href="index.html" class="new-search-btn">Try Again</a>
+        </div>
+
+        <!-- Results Sections -->
+        <div id="resultsContainer" class="hidden">
+            <!-- Ideal Man Section (Fixed) -->
+            <!-- <div class="section">
+                <h2>My ideal man</h2>
+                <ul id="idealManList" class="ideal-man-list">
+                </ul>
+            </div> -->
+
+            <!-- Additional Stats Section -->
+            <div id="additionalStatsSection" class="section hidden">
+                <h2>My Ideal Man</h2>
+                <div id="boxParagraphContent" class="probability-text">
+                    <!-- Will be populated with box paragraph data -->
+                </div>
+            </div>
+
+            <!-- Probability Section -->
+            <div class="section">
+                <h2>Probability</h2>
+                
+                <div class="probability-visualization" id="probabilityVisualization">
+                    <!-- Original HTML from the scraped site will be inserted here -->
+                </div>
+
+                <div class="probability-text" id="probabilityText">
+                    According to <a href="#">statistical data</a>, the probability a guy of the U.S. male population ages <span id="ageRange"></span> meets your standards is
+                </div>
+
+                <div class="percentage" id="percentage">0%</div>
+            </div>
+
+            <!-- Delusion Score Section -->
+            <div class="section">
+                <h2>Delusion score</h2>
+                
+                <div class="cat-food-containers" id="catFoodContainers">
+                    <!-- Cat food images will be populated by JavaScript -->
+                </div>
+
+                <div class="delusion-score" id="delusionScore">0/5</div>
+                <div class="delusion-label" id="delusionLabel">Loading...</div>
+
+                <a href="index.html" class="new-search-btn">New search</a>
+
+                <!-- Screenshot Section -->
+                <div id="screenshotSection" class="screenshot-section hidden">
+                    <h3 style="color: #ecf0f1; margin-bottom: 15px; font-size: 1.1rem;">Page Screenshot</h3>
+                    <p style="color: #bdc3c7; margin-bottom: 15px; font-size: 0.95rem;">
+                        View the actual scraped page to verify results:
+                    </p>
+                    <a id="screenshotLink" href="#" target="_blank" class="screenshot-link">
+                        📸 View Screenshot
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Navigation -->
+        <div class="footer-nav">
+            <a href="index.html">Home</a>
+            <a href="#">Privacy</a>
+            <a href="#">Stats</a>
+            <a href="#">About</a>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:3000';
+
+        // Get URL parameters
+        function getUrlParams() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return {
+                minAge: parseInt(urlParams.get('minAge')) || 25,
+                maxAge: parseInt(urlParams.get('maxAge')) || 35,
+                race: urlParams.get('race') || '0',
+                height: parseFloat(urlParams.get('height')) || 0, // Height comes as CM value
+                income: urlParams.get('minIncome') || 'any', // FIXED: Read minIncome from URL
+                excludeMarried: urlParams.get('excludeMarried') === 'true',
+                excludeObese: urlParams.get('excludeObese') === 'true'
+            };
+        }
+
+        // Generate cat food images
+        function generateCatFoodImages(score) {
+            const container = document.getElementById('catFoodContainers');
+            if (!container) {
+                console.error('Cat food container not found');
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            for (let i = 1; i <= 5; i++) {
+                const catFood = document.createElement('div');
+                catFood.className = 'cat-food';
+                
+                // Use images from the original site
+                if (i <= score) {
+                    catFood.style.backgroundImage = 'url(https://igotstandardsbro.com/img/score_item_on.df14762f.svg)';
+                } else {
+                    catFood.style.backgroundImage = 'url(https://igotstandardsbro.com/img/score_item_off.001320a1.svg)';
+                }
+                
+                container.appendChild(catFood);
+            }
+        }
+
+        // Format ideal man criteria
+        function formatIdealManCriteria(criteria) {
+            const criteriaList = [];
+            
+            // Age
+            criteriaList.push(`Age: ${criteria.minAge} - ${criteria.maxAge} years old`);
+            
+            // Race
+            if (criteria.race !== '0') {
+                const raceNames = { '1': 'White', '2': 'Black', '3': 'Asian' };
+                criteriaList.push(`Race: ${raceNames[criteria.race] || 'Unknown'}`);
+            } else {
+                criteriaList.push("Race: Any ethnicity");
+            }
+            
+            // Height - Convert from CM to feet/inches for display
+            if (criteria.height > 0) {
+                const heightInCm = criteria.height;
+                const heightInInches = heightInCm / 2.54;
+                const feet = Math.floor(heightInInches / 12);
+                const inches = Math.round(heightInInches % 12);
+                criteriaList.push(`Height: At least ${feet}'${inches}" tall`);
+            } else {
+                criteriaList.push("Height: Any height");
+            }
+            
+            // Income
+            if (criteria.income !== 'any' && criteria.income !== '0') {
+                const incomeFormatted = parseInt(criteria.income).toLocaleString();
+                criteriaList.push(`Income: At least ${incomeFormatted} per year`);
+            } else {
+                criteriaList.push("Income: Any income level");
+            }
+            
+            // Marital status
+            if (criteria.excludeMarried) {
+                criteriaList.push("Relationship status: Single (not married)");
+            } else {
+                criteriaList.push("Relationship status: Any marital status");
+            }
+            
+            // Body type
+            if (criteria.excludeObese) {
+                criteriaList.push("Body type: Not obese");
+            } else {
+                criteriaList.push("Body type: Any body type");
+            }
+            
+            return criteriaList;
+        }
+
+        // Get delusion score from percentage
+        function getDelusionScore(percentage) {
+            if (percentage >= 10) return { score: 1, label: "Reasonable" };
+            if (percentage >= 5) return { score: 2, label: "Picky" };
+            if (percentage >= 1) return { score: 3, label: "Delusional" };
+            if (percentage >= 0.1) return { score: 4, label: "Very Delusional" };
+            return { score: 5, label: "Aspiring cat lady" };
+        }
+
+        // Display results with proper error handling
+        function displayResults(criteria, scrapedData) {
+            try {
+                // Format ideal man criteria
+                const idealManCriteria = formatIdealManCriteria(criteria);
+                // const idealManList = document.getElementById('idealManList');
+                
+                // if (idealManList) {
+                //     idealManList.innerHTML = idealManCriteria.map(criterion => `<li>${criterion}</li>`).join('');
+                // } else {
+                //     console.error('idealManList element not found');
+                // }
+
+                // Display additional box paragraph data if available
+                if (scrapedData.boxParagraphList && scrapedData.boxParagraphList.length > 0) {
+                    const boxParagraphContent = document.getElementById('boxParagraphContent');
+                    const additionalStatsSection = document.getElementById('additionalStatsSection');
+                    
+                    if (boxParagraphContent && additionalStatsSection) {
+                        // Convert the array of HTML strings to a formatted list
+                        const listHTML = '<ul style="list-style: disc; padding-left: 20px; text-align: left; max-width: 600px; margin: 0 auto;">' + 
+                            scrapedData.boxParagraphList.join('') + 
+                            '</ul>';
+                        
+                        boxParagraphContent.innerHTML = listHTML;
+                        additionalStatsSection.classList.remove('hidden');
+                        
+                        console.log('Displayed box paragraph data:', scrapedData.boxParagraphList.length, 'items');
+                    }
+                }
+
+                // Insert the original probability visualization HTML
+                const probabilityViz = document.getElementById('probabilityVisualization');
+                if (probabilityViz) {
+                    if (scrapedData.populationData) {
+                        probabilityViz.innerHTML = scrapedData.populationData;
+                    } else {
+                        probabilityViz.innerHTML = '<p style="color: white;">Visualization not available</p>';
+                    }
+                }
+
+                // Extract percentage from scraped data
+                let percentage = 0;
+                if (scrapedData.probability) {
+                    const match = scrapedData.probability.match(/(\d+\.?\d*)%/);
+                    if (match) {
+                        percentage = parseFloat(match[1]);
+                    }
+                }
+
+                // Update age range
+                const ageRangeElement = document.getElementById('ageRange');
+                if (ageRangeElement) {
+                    ageRangeElement.textContent = `${criteria.minAge} to ${criteria.maxAge}`;
+                }
+                
+                // Update percentage display
+                const percentageElement = document.getElementById('percentage');
+                if (percentageElement) {
+                    percentageElement.textContent = scrapedData.probability || `${percentage}%`;
+                }
+
+                // Use the exact cat food images HTML from scraper
+                const catFoodContainer = document.getElementById('catFoodContainers');
+                if (catFoodContainer && scrapedData.scoreFlexHTML) {
+                    // Replace relative URLs with absolute URLs and wrap in container divs
+                    const updatedHTML = scrapedData.scoreFlexHTML.replace(
+                        /src="\/img\//g, 
+                        'src="https://igotstandardsbro.com/img/'
+                    );
+                    
+                    // Wrap each image in a cat-food div for consistent styling
+                    const imageElements = updatedHTML.match(/<img[^>]+>/g) || [];
+                    catFoodContainer.innerHTML = imageElements.map(img => 
+                        `<div class="cat-food" style="background-image: none;">${img}</div>`
+                    ).join('');
+                    
+                    // Style the images to fit properly
+                    const images = catFoodContainer.querySelectorAll('img');
+                    images.forEach(img => {
+                        img.style.width = '100%';
+                        img.style.height = '100%';
+                        img.style.objectFit = 'contain';
+                    });
+                } else {
+                    // Fallback to manual generation if scoreFlexHTML not available
+                    const delusionInfo = getDelusionScore(percentage);
+                    generateCatFoodImages(delusionInfo.score);
+                }
+
+                // Get and display delusion score
+                const delusionInfo = getDelusionScore(percentage);
+                
+                // Try to extract delusion score from scraped data first
+                const delusionScoreElement = document.getElementById('delusionScore');
+                const delusionLabelElement = document.getElementById('delusionLabel');
+                
+                if (delusionScoreElement) {
+                    if (scrapedData.delusionScoreNumber) {
+                        delusionScoreElement.textContent = scrapedData.delusionScoreNumber;
+                    } else {
+                        delusionScoreElement.textContent = `${delusionInfo.score}/5`;
+                    }
+                }
+                
+                if (delusionLabelElement) {
+                    if (scrapedData.delusionScore) {
+                        delusionLabelElement.textContent = scrapedData.delusionScore;
+                    } else {
+                        delusionLabelElement.textContent = delusionInfo.label;
+                    }
+                }
+
+                // Show screenshot link if available
+                if (scrapedData.screenshotUrl) {
+                    const screenshotSection = document.getElementById('screenshotSection');
+                    const screenshotLink = document.getElementById('screenshotLink');
+                    
+                    if (screenshotSection && screenshotLink) {
+                        screenshotLink.href = scrapedData.screenshotUrl;
+                        screenshotSection.classList.remove('hidden');
+                        console.log('Screenshot available:', scrapedData.screenshotUrl);
+                    }
+                }
+
+                // Show results
+                const loadingSection = document.getElementById('loadingSection');
+                const resultsContainer = document.getElementById('resultsContainer');
+                
+                if (loadingSection) loadingSection.classList.add('hidden');
+                if (resultsContainer) resultsContainer.classList.remove('hidden');
+
+            } catch (error) {
+                console.error('Error in displayResults:', error);
+                showError('Error displaying results: ' + error.message);
+            }
+        }
+
+        // Show error
+        function showError(message) {
+            const errorText = document.getElementById('errorText');
+            const loadingSection = document.getElementById('loadingSection');
+            const errorSection = document.getElementById('errorSection');
+            
+            if (errorText) errorText.textContent = message;
+            if (loadingSection) loadingSection.classList.add('hidden');
+            if (errorSection) errorSection.classList.remove('hidden');
+        }
+
+        // Fetch results
+        async function fetchResults() {
+            const criteria = getUrlParams();
+            
+            console.log('Criteria received from URL:', criteria);
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/scrape`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(criteria)
+                });
+
+                const result = await response.json();
+
+                if (!result.success) {
+                    throw new Error(result.error || 'Failed to fetch results');
+                }
+
+                console.log('Results received:', result.data);
+                displayResults(criteria, result.data);
+
+            } catch (error) {
+                console.error('Error fetching results:', error);
+                showError(error.message || 'Failed to calculate results. Please try again.');
+            }
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add entrance animation
+            document.body.style.opacity = '0';
+            setTimeout(() => {
+                document.body.style.transition = 'opacity 0.8s ease';
+                document.body.style.opacity = '1';
+            }, 100);
+
+            // Fetch results
+            fetchResults();
+        });
+    </script>
+</body>
+</html>
+
