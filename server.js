@@ -9,7 +9,563 @@ const crypto = require('crypto');
 const app = express();
 app.use(cors());
 app.use(express.json());
+// Add these dependencies to your package.json
+// npm install swagger-jsdoc swagger-ui-express
 
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
+
+// Swagger configuration
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Standards Calculator API',
+      version: '1.0.0',
+      description: 'API for calculating dating standards and probability scores with web scraping',
+      contact: {
+        name: 'API Support',
+        email: 'navidml6453@gmail.com',
+      },
+    },
+    servers: [
+      {
+        url: 'http://localhost:3000',
+        description: 'Development server',
+      },
+    ],
+    components: {
+      schemas: {
+        Criteria: {
+          type: 'object',
+          properties: {
+            minAge: {
+              type: 'integer',
+              minimum: 18,
+              maximum: 85,
+              default: 25,
+              description: 'Minimum age preference'
+            },
+            maxAge: {
+              type: 'integer',
+              minimum: 18,
+              maximum: 85,
+              default: 35,
+              description: 'Maximum age preference'
+            },
+            excludeMarried: {
+              type: 'boolean',
+              default: false,
+              description: 'Exclude married individuals'
+            },
+            race: {
+              type: 'string',
+              enum: ['any', 'white', 'black', 'asian', '0', '1', '2', '3'],
+              default: 'any',
+              description: 'Race preference (any=0, white=1, black=2, asian=3)'
+            },
+            minHeight: {
+              type: 'number',
+              minimum: 0,
+              maximum: 250,
+              default: 0,
+              description: 'Minimum height in CM (0 for any height)'
+            },
+            excludeObese: {
+              type: 'boolean',
+              default: false,
+              description: 'Exclude obese individuals'
+            },
+            minIncome: {
+              type: 'integer',
+              minimum: 0,
+              default: 0,
+              description: 'Minimum income requirement (0 for any income)'
+            }
+          },
+          example: {
+            minAge: 25,
+            maxAge: 35,
+            excludeMarried: true,
+            race: 'white',
+            minHeight: 182.88,
+            excludeObese: true,
+            minIncome: 75000
+          }
+        },
+        Results: {
+          type: 'object',
+          properties: {
+            probability: {
+              type: 'string',
+              description: 'Probability percentage (e.g., "2.1%")',
+              example: '2.1%'
+            },
+            delusionScore: {
+              type: 'string',
+              description: 'Delusion score label',
+              example: 'Very Delusional'
+            },
+            delusionScoreNumber: {
+              type: 'string',
+              description: 'Delusion score as fraction',
+              example: '8/10'
+            },
+            populationData: {
+              type: 'string',
+              description: 'HTML content for population visualization'
+            },
+            paragraphText: {
+              type: 'string',
+              description: 'Additional paragraph text from results'
+            },
+            scoreFlexHTML: {
+              type: 'string',
+              description: 'HTML content for score visualization'
+            },
+            boxParagraphList: {
+              type: 'array',
+              items: {
+                type: 'string'
+              },
+              description: 'List of criteria details'
+            },
+            screenshotUrl: {
+              type: 'string',
+              description: 'URL to screenshot of scraped page',
+              example: '/screenshot_1234567890.png'
+            }
+          }
+        },
+        ApiResponse: {
+          type: 'object',
+          properties: {
+            success: {
+              type: 'boolean',
+              description: 'Whether the request was successful'
+            },
+            fromCache: {
+              type: 'boolean',
+              description: 'Whether data was returned from cache'
+            },
+            cacheKey: {
+              type: 'string',
+              description: 'Unique cache key for this request'
+            },
+            criteria: {
+              $ref: '#/components/schemas/Criteria'
+            },
+            results: {
+              $ref: '#/components/schemas/Results'
+            },
+            timestamp: {
+              type: 'string',
+              format: 'date-time',
+              description: 'Response timestamp'
+            }
+          }
+        },
+        CacheStats: {
+          type: 'object',
+          properties: {
+            totalEntries: {
+              type: 'integer',
+              description: 'Total number of cached entries'
+            },
+            totalAccesses: {
+              type: 'integer',
+              description: 'Total number of cache accesses'
+            },
+            oldestEntry: {
+              type: 'string',
+              format: 'date-time',
+              description: 'Timestamp of oldest cache entry'
+            },
+            newestEntry: {
+              type: 'string',
+              format: 'date-time',
+              description: 'Timestamp of newest cache entry'
+            }
+          }
+        },
+        Error: {
+          type: 'object',
+          properties: {
+            success: {
+              type: 'boolean',
+              example: false
+            },
+            error: {
+              type: 'string',
+              description: 'Error message'
+            },
+            details: {
+              type: 'string',
+              description: 'Additional error details'
+            },
+            timestamp: {
+              type: 'string',
+              format: 'date-time'
+            }
+          }
+        }
+      }
+    }
+  },
+  apis: ['./server.js'], // Path to the API docs
+};
+
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
+
+// Add this to your Express app after app initialization
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+  customCssUrl: 'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.css',
+  customJs: [
+    'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-bundle.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-standalone-preset.js'
+  ]
+}));
+
+// Add route to serve swagger spec as JSON
+app.get('/swagger.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(swaggerSpec);
+});
+
+/**
+ * @swagger
+ * /api/results:
+ *   get:
+ *     summary: Get dating standards results using query parameters
+ *     description: Calculate probability and delusion score based on dating criteria
+ *     tags: [Results]
+ *     parameters:
+ *       - in: query
+ *         name: minAge
+ *         schema:
+ *           type: integer
+ *           minimum: 18
+ *           maximum: 85
+ *           default: 25
+ *         description: Minimum age preference
+ *       - in: query
+ *         name: maxAge
+ *         schema:
+ *           type: integer
+ *           minimum: 18
+ *           maximum: 85
+ *           default: 35
+ *         description: Maximum age preference
+ *       - in: query
+ *         name: excludeMarried
+ *         schema:
+ *           type: boolean
+ *           default: false
+ *         description: Exclude married individuals
+ *       - in: query
+ *         name: race
+ *         schema:
+ *           type: string
+ *           enum: [any, white, black, asian, "0", "1", "2", "3"]
+ *           default: any
+ *         description: Race preference
+ *       - in: query
+ *         name: minHeight
+ *         schema:
+ *           type: number
+ *           minimum: 0
+ *           default: 0
+ *         description: Minimum height in CM (0 for any)
+ *       - in: query
+ *         name: excludeObese
+ *         schema:
+ *           type: boolean
+ *           default: false
+ *         description: Exclude obese individuals
+ *       - in: query
+ *         name: minIncome
+ *         schema:
+ *           type: integer
+ *           minimum: 0
+ *           default: 0
+ *         description: Minimum income (0 for any)
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiResponse'
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *   post:
+ *     summary: Get dating standards results using JSON body
+ *     description: Calculate probability and delusion score based on dating criteria
+ *     tags: [Results]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Criteria'
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiResponse'
+ *       400:
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+
+/**
+ * @swagger
+ * /api/cache:
+ *   get:
+ *     summary: Get all cached data with statistics
+ *     description: Retrieve all cached calculation results and cache statistics
+ *     tags: [Cache]
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 stats:
+ *                   $ref: '#/components/schemas/CacheStats'
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       key:
+ *                         type: string
+ *                       criteria:
+ *                         $ref: '#/components/schemas/Criteria'
+ *                       data:
+ *                         $ref: '#/components/schemas/Results'
+ *                       timestamp:
+ *                         type: string
+ *                         format: date-time
+ *                       accessCount:
+ *                         type: integer
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *   delete:
+ *     summary: Clear all cached data
+ *     description: Delete all cached calculation results (admin only)
+ *     tags: [Cache]
+ *     responses:
+ *       200:
+ *         description: Cache cleared successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Cache cleared successfully"
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+
+/**
+ * @swagger
+ * /api/cache/stats:
+ *   get:
+ *     summary: Get cache statistics
+ *     description: Retrieve statistics about cached data
+ *     tags: [Cache]
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 stats:
+ *                   $ref: '#/components/schemas/CacheStats'
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+
+/**
+ * @swagger
+ * /api/search:
+ *   get:
+ *     summary: Search cached data with filters
+ *     description: Find cached results matching specific criteria
+ *     tags: [Search]
+ *     parameters:
+ *       - in: query
+ *         name: minAge
+ *         schema:
+ *           type: integer
+ *         description: Filter by minimum age
+ *       - in: query
+ *         name: maxAge
+ *         schema:
+ *           type: integer
+ *         description: Filter by maximum age
+ *       - in: query
+ *         name: race
+ *         schema:
+ *           type: string
+ *         description: Filter by race preference
+ *       - in: query
+ *         name: minIncome
+ *         schema:
+ *           type: integer
+ *         description: Filter by minimum income
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 total:
+ *                   type: integer
+ *                   description: Total number of cached entries
+ *                 filtered:
+ *                   type: integer
+ *                   description: Number of entries matching filter
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       key:
+ *                         type: string
+ *                       criteria:
+ *                         $ref: '#/components/schemas/Criteria'
+ *                       data:
+ *                         $ref: '#/components/schemas/Results'
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+
+/**
+ * @swagger
+ * /api/scrape:
+ *   post:
+ *     summary: Legacy scraping endpoint
+ *     description: Legacy endpoint for backward compatibility (same as POST /api/results)
+ *     tags: [Legacy]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Criteria'
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   $ref: '#/components/schemas/Results'
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+
+/**
+ * @swagger
+ * /health:
+ *   get:
+ *     summary: Health check endpoint
+ *     description: Check API health status and license information
+ *     tags: [System]
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "OK"
+ *                 timestamp:
+ *                   type: string
+ *                   format: date-time
+ *                 licenseExpiry:
+ *                   type: string
+ *                   format: date
+ *                 daysRemaining:
+ *                   type: integer
+ *                 expired:
+ *                   type: boolean
+ *                 cache:
+ *                   type: object
+ *                   properties:
+ *                     totalEntries:
+ *                       type: integer
+ *                     totalAccesses:
+ *                       type: integer
+ */
+
+console.log('Swagger documentation available at http://localhost:3000/api-docs');
+console.log('Swagger JSON spec available at http://localhost:3000/swagger.json');
 // Cache Manager Class
 class CacheManager {
     constructor() {
