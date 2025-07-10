@@ -760,173 +760,173 @@ class CacheManager {
 // Initialize cache manager
 const cacheManager = new CacheManager();
 
-// Simple License System (No External Dependencies)
-class LicenseManager {
-    constructor() {
-        // Set license expiry date (1 month from deployment)
-        this.licenseExpiry = process.env.LICENSE_EXPIRY || '2025-07-15'; // Change this date
-        this.isExpired = false;
+// // Simple License System (No External Dependencies)
+// class LicenseManager {
+//     constructor() {
+//         // Set license expiry date (1 month from deployment)
+//         this.licenseExpiry = '2026-07-15'; // Change this date
+//         this.isExpired = false;
         
-        // Check license on startup
-        this.checkLicenseExpiry();
+//         // Check license on startup
+//         this.checkLicenseExpiry();
         
-        // Check every hour
-        setInterval(() => {
-            this.checkLicenseExpiry();
-        }, 3600000); // 1 hour
-    }
+//         // Check every hour
+//         setInterval(() => {
+//             this.checkLicenseExpiry();
+//         }, 3600000); // 1 hour
+//     }
 
-    checkLicenseExpiry() {
-        const now = new Date();
-        const expiry = new Date(this.licenseExpiry);
+//     checkLicenseExpiry() {
+//         const now = new Date();
+//         const expiry = new Date(this.licenseExpiry);
         
-        if (now > expiry) {
-            if (!this.isExpired) {
-                console.log('🚨 LICENSE EXPIRED 🚨');
-                this.isExpired = true;
-                this.createExpiredPage();
-            }
-            return false;
-        }
+//         if (now > expiry) {
+//             if (!this.isExpired) {
+//                 console.log('🚨 LICENSE EXPIRED 🚨');
+//                 this.isExpired = true;
+//                 this.createExpiredPage();
+//             }
+//             return false;
+//         }
         
-        const daysRemaining = Math.ceil((expiry - now) / (1000 * 60 * 60 * 24));
-        if (daysRemaining <= 7) {
-            console.log(`⚠️ WARNING: License expires in ${daysRemaining} days`);
-        }
+//         const daysRemaining = Math.ceil((expiry - now) / (1000 * 60 * 60 * 24));
+//         // if (daysRemaining <= 7) {
+//         //     console.log(`⚠️ WARNING: License expires in ${daysRemaining} days`);
+//         // }
         
-        return true;
-    }
+//         return true;
+//     }
 
-    createExpiredPage() {
-        const expiredHTML = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Container Not Found</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-        }
-        .container {
-            text-align: center;
-            padding: 50px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            max-width: 600px;
-        }
-        h1 {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            color: #ff6b6b;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-        .icon {
-            font-size: 5rem;
-            margin-bottom: 30px;
-            display: block;
-        }
-        p {
-            font-size: 1.3rem;
-            margin-bottom: 15px;
-            opacity: 0.9;
-            line-height: 1.6;
-        }
-        .expired-date {
-            font-size: 1.1rem;
-            color: #ffeb3b;
-            margin-top: 30px;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-        }
-        .contact-info {
-            margin-top: 30px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            border-left: 4px solid #ff6b6b;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <span class="icon">🚫</span>
-        <h1>Container Not Found</h1>
-        <p>This application container has expired and is no longer available.</p>
-        <p>Please contact the developer to renew access.</p>
+//     createExpiredPage() {
+//         const expiredHTML = `
+// <!DOCTYPE html>
+// <html lang="en">
+// <head>
+//     <meta charset="UTF-8">
+//     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+//     <title>Container Not Found</title>
+//     <style>
+//         * { margin: 0; padding: 0; box-sizing: border-box; }
+//         body {
+//             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+//             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+//             min-height: 100vh;
+//             display: flex;
+//             align-items: center;
+//             justify-content: center;
+//             color: white;
+//         }
+//         .container {
+//             text-align: center;
+//             padding: 50px;
+//             background: rgba(255, 255, 255, 0.1);
+//             border-radius: 20px;
+//             backdrop-filter: blur(10px);
+//             border: 1px solid rgba(255, 255, 255, 0.2);
+//             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+//             max-width: 600px;
+//         }
+//         h1 {
+//             font-size: 3rem;
+//             margin-bottom: 20px;
+//             color: #ff6b6b;
+//             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+//         }
+//         .icon {
+//             font-size: 5rem;
+//             margin-bottom: 30px;
+//             display: block;
+//         }
+//         p {
+//             font-size: 1.3rem;
+//             margin-bottom: 15px;
+//             opacity: 0.9;
+//             line-height: 1.6;
+//         }
+//         .expired-date {
+//             font-size: 1.1rem;
+//             color: #ffeb3b;
+//             margin-top: 30px;
+//             padding: 15px;
+//             background: rgba(255, 255, 255, 0.1);
+//             border-radius: 10px;
+//         }
+//         .contact-info {
+//             margin-top: 30px;
+//             padding: 20px;
+//             background: rgba(255, 255, 255, 0.1);
+//             border-radius: 10px;
+//             border-left: 4px solid #ff6b6b;
+//         }
+//     </style>
+// </head>
+// <body>
+//     <div class="container">
+//         <span class="icon">🚫</span>
+//         <h1>Container Not Found</h1>
+//         <p>This application container has expired and is no longer available.</p>
+//         <p>Please contact the developer to renew access.</p>
         
-        <div class="expired-date">
-            <strong>License Expired:</strong> ${this.licenseExpiry}<br>
-            <strong>Current Date:</strong> ${new Date().toISOString().split('T')[0]}
-        </div>
+//         <div class="expired-date">
+//             <strong>License Expired:</strong> ${this.licenseExpiry}<br>
+//             <strong>Current Date:</strong> ${new Date().toISOString().split('T')[0]}
+//         </div>
         
-        <div class="contact-info">
-            <strong>📧 Contact Developer</strong><br>
-            To renew access or get support, please contact:<br>
-            <strong>Email:</strong> navidml6453@gmail.com<br>
-            <strong>Phone:</strong> +447491598168<br>
-            <strong>WhatsApp:</strong> +447491598168
-        </div>
-    </div>
-</body>
-</html>`;
+//         <div class="contact-info">
+//             <strong>📧 Contact Developer</strong><br>
+//             To renew access or get support, please contact:<br>
+//             <strong>Email:</strong> navidml6453@gmail.com<br>
+//             <strong>Phone:</strong> +447491598168<br>
+//             <strong>WhatsApp:</strong> +447491598168
+//         </div>
+//     </div>
+// </body>
+// </html>`;
 
-        try {
-            // Ensure public directory exists
-            if (!fs.existsSync('public')) {
-                fs.mkdirSync('public', { recursive: true });
-            }
+//         try {
+//             // Ensure public directory exists
+//             if (!fs.existsSync('public')) {
+//                 fs.mkdirSync('public', { recursive: true });
+//             }
             
-            // Replace all HTML files with expired page
-            fs.writeFileSync(path.join('public', 'index.html'), expiredHTML);
-            fs.writeFileSync(path.join('public', 'results.html'), expiredHTML);
+//             // Replace all HTML files with expired page
+//             fs.writeFileSync(path.join('public', 'index.html'), expiredHTML);
+//             fs.writeFileSync(path.join('public', 'results.html'), expiredHTML);
             
-            console.log('License expired - Created "Container Not Found" page');
-        } catch (error) {
-            console.log('Failed to create expired page');
-        }
-    }
+//             console.log('License expired - Created "Container Not Found" page');
+//         } catch (error) {
+//             console.log('Failed to create expired page');
+//         }
+//     }
 
-    isActive() {
-        return !this.isExpired && this.checkLicenseExpiry();
-    }
-}
+//     isActive() {
+//         return !this.isExpired && this.checkLicenseExpiry();
+//     }
+// }
 
-// Initialize license manager
-const licenseManager = new LicenseManager();
+// // Initialize license manager
+// const licenseManager = new LicenseManager();
 
-// Middleware to check license status
-function checkLicense(req, res, next) {
-    if (!licenseManager.isActive()) {
-        // If accessing API endpoints, return JSON error
-        if (req.path.startsWith('/api/')) {
-            return res.status(503).json({
-                error: 'Service Unavailable',
-                message: 'Container license has expired',
-                expired: true
-            });
-        }
+// // Middleware to check license status
+// function checkLicense(req, res, next) {
+//     if (!licenseManager.isActive()) {
+//         // If accessing API endpoints, return JSON error
+//         if (req.path.startsWith('/api/')) {
+//             return res.status(503).json({
+//                 error: 'Service Unavailable',
+//                 message: 'Container license has expired',
+//                 expired: true
+//             });
+//         }
         
-        // For web requests, let it serve the expired page
-        return next();
-    }
-    next();
-}
+//         // For web requests, let it serve the expired page
+//         return next();
+//     }
+//     next();
+// }
 
 // Apply license check to all routes
-app.use(checkLicense);
+// app.use(checkLicense);
 
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
@@ -1721,17 +1721,17 @@ app.get('/api/docs', (req, res) => {
 
 // Health check endpoint
 app.get('/health', (req, res) => {
-    const expiry = new Date(licenseManager.licenseExpiry);
+    // const expiry = new Date(licenseManager.licenseExpiry);
     const now = new Date();
-    const daysRemaining = Math.ceil((expiry - now) / (1000 * 60 * 60 * 24));
+    // const daysRemaining = Math.ceil((expiry - now) / (1000 * 60 * 60 * 24));
     const cacheStats = cacheManager.getStats();
     
     res.json({ 
-        status: licenseManager.isActive() ? 'OK' : 'EXPIRED',
+        status: 'OK' ,
         timestamp: new Date().toISOString(),
-        licenseExpiry: licenseManager.licenseExpiry,
-        daysRemaining: daysRemaining,
-        expired: now > expiry,
+        // licenseExpiry: licenseManager.licenseExpiry,
+        // daysRemaining: daysRemaining,
+        // expired: now > expiry,
         cache: {
             totalEntries: cacheStats.totalEntries,
             totalAccesses: cacheStats.totalAccesses
@@ -1753,5 +1753,5 @@ app.listen(PORT, '0.0.0.0', () => {
     console.log(`Cache initialized with ${stats.totalEntries} entries`);
 });
 
-module.exports = { scrapeResults, getResults, licenseManager, cacheManager };
+module.exports = { scrapeResults, getResults, cacheManager };
 
